@@ -143,3 +143,6 @@ gradle.properties
 .DS_Store
 .idea/deploymentTargetDropDown.xml
 .idea/kotlinc.xml
+
+#API KEY
+app/src/main/java/com/mzcn/tmdbmoviesapp/secret/TmdbApiKeys.kt
