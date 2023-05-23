@@ -10,25 +10,32 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.url
 import io.ktor.http.HttpHeaders
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onStart
 import java.lang.Exception
 import javax.inject.Inject
 
 class MoviesRepositoryImpl @Inject constructor(
     private val httpClient: HttpClient
 ) : MoviesRepository {
-    override suspend fun getPopularMovies(): Resource<PopularMovies> {
+    override suspend fun getPopularMovies(): Flow<Resource<PopularMovies>> {
 
         return try {
-            Resource.Success(
-                httpClient.get{
-                    url(HttpRoutes.POPULAR_MOVIES)
-                    header(HttpHeaders.Authorization, TmdbApiKeys.AUTH_KEY)
-                }.body()
-            )
+            flowOf<Resource<PopularMovies>>(
+                Resource.Success(
+                    httpClient.get {
+                        url(HttpRoutes.POPULAR_MOVIES)
+                        header(HttpHeaders.Authorization, TmdbApiKeys.AUTH_KEY)
+                    }.body()
+                )
+            ).onStart { emit(Resource.Loading) }
 
-        }catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
-            Resource.Failure(e)
+            flowOf(Resource.Failure(e))
         }
     }
 }
