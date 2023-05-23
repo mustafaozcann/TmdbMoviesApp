@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.mzcn.tmdbmoviesapp.databinding.ActivityMainBinding
 import com.mzcn.tmdbmoviesapp.ui.adapter.MovieListAdapter
+import com.mzcn.tmdbmoviesapp.ui.adapter.MovieListItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -31,7 +32,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
 
-        rvMovies.adapter = movieListAdapter
+        rvMovies.apply {
+            adapter = movieListAdapter
+            addItemDecoration(MovieListItemDecoration())
+        }
 
         viewModel.movies.observe(this@MainActivity, Observer { movies ->
 
